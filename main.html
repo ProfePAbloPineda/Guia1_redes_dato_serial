@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Guía de laboratorio - Análisis de Señal de Transmisión Serial</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.5;
+            background-color: #F9FBFC;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2C3E50;
+            margin-bottom: 0.5em;
+        }
+        h2 {
+            color: #2980B9;
+            border-left: 5px solid #2980B9;
+            padding-left: 10px;
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+        }
+        h3 {
+            color: #C0392B;
+            margin-top: 1.2em;
+            margin-bottom: 0.5em;
+        }
+        p, li {
+            text-align: justify;
+            margin-bottom: 0.8em;
+        }
+        ul, ol {
+            margin-left: 2em;
+        }
+        hr {
+            margin: 2em 0;
+            border: none;
+            border-top: 2px solid #BDC3C7;
+        }
+        /* Image Styles */
+        .section-image, .subsection-image {
+            text-align: center;
+            margin: 1em 0;
+        }
+        img {
+            display: block;
+            margin: 10px auto;
+            width: 400px;
+            height: auto;
+            border: 2px solid #BDC3C7;
+            border-radius: 4px;
+        }
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1em 0;
+            background-color: #FFFFFF;
+        }
+        table, th, td {
+            border: 1px solid #DDD;
+        }
+        th {
+            background-color: #ECF0F1;
+            color: #333;
+            font-weight: bold;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        /* Highlight some key parts */
+        strong {
+            color: #8E44AD;
+        }
+        em {
+            color: #16A085;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Guía de laboratorio:Arquitectura de comunicaciones industriales</h1>
+<p>
+El objetivo general es <strong>analizar una señal de transmisión serial</strong> por medio de un osciloscopio, utilizando un computador, un adaptador USB a Serial, un conector DB9 y el programa PuTTY.
+</p>
+
+<hr>
+
+<h2>1. Marco Teórico</h2>
+
+<div class="section-image">
+    <!-- Imagen de la sección 1 (1.jpg) -->
+    <img src="1.jpg" alt="Imagen Sección 1 - Marco Teórico">
+</div>
+
+<p>
+En esta sección se detallan los fundamentos necesarios para comprender el experimento de transmisión serial y su observación en un osciloscopio.
+</p>
+
+<h3>1.a) El dato digital serial</h3>
+<div class="subsection-image">
+    <!-- Imagen para 1.a (1a.jpg) -->
+    <img src="1a.jpg" alt="Imagen 1.a - El dato digital serial">
+</div>
+<p>
+- La comunicación serial es un método de transmisión de datos en el cual la información se envía bit a bit a través de un solo canal o línea de comunicación. <br>
+- En contraposición a la comunicación paralela (donde varios bits se transmiten simultáneamente por múltiples líneas), la serial utiliza menos conductores y es común en largas distancias. <br>
+- La velocidad de transferencia de datos se mide en bits por segundo (bps o baudios), siendo 9600, 19200 o 115200 bps valores típicos.
+</p>
+
+<h3>1.b) Parámetros de la comunicación serial asíncrona</h3>
+<div class="subsection-image">
+    <!-- Imagen para 1.b (1b.jpg) -->
+    <img src="1b.jpg" alt="Imagen 1.b - Parámetros de la comunicación serial">
+</div>
+<p>
+En la siguiente tabla se resumen los parámetros principales de la comunicación serial asíncrona:
+</p>
+<table>
+    <tr>
+        <th>Parámetro</th>
+        <th>Descripción</th>
+    </tr>
+    <tr>
+        <td>Velocidad en baudios</td>
+        <td>Es la frecuencia de símbolo o bits por segundo (por ejemplo, 9600 bps).</td>
+    </tr>
+    <tr>
+        <td>Bits de datos</td>
+        <td>Generalmente 7 u 8 bits de datos por trama.</td>
+    </tr>
+    <tr>
+        <td>Bit de paridad</td>
+        <td>Puede ser None (ninguna), Even (par), Odd (impar).</td>
+    </tr>
+    <tr>
+        <td>Bits de parada</td>
+        <td>Por lo general 1 o 2 bits de parada.</td>
+    </tr>
+    <tr>
+        <td>Flujo de control</td>
+        <td>Puede ser ninguno, por hardware (RTS/CTS) o por software (XON/XOFF).</td>
+    </tr>
+</table>
+<p>
+Estos parámetros deben ser configurados de la misma manera en ambos dispositivos que se comunican para que la transmisión y recepción de datos sea correcta.
+</p>
+
+<h3>1.c) Ejemplos de dispositivos que usan la transmisión serial RS-232 o RS-485</h3>
+<div class="subsection-image">
+    <!-- Imagen para 1.c (1c.jpg) -->
+    <img src="1c.jpg" alt="Imagen 1.c - Ejemplos de dispositivos que usan RS-232 o RS-485">
+</div>
+<p><strong>RS-232:</strong></p>
+<ul>
+    <li>Computadoras antiguas con puertos COM integrados.</li>
+    <li>Equipos de instrumentación, como algunos osciloscopios, analizadores lógicos, routers, etc.</li>
+    <li>Dispositivos de control industrial que intercambian datos a cortas distancias.</li>
+</ul>
+<p><strong>RS-485:</strong></p>
+<ul>
+    <li>Sistemas de control industrial y automatización (PLC, sensores industriales).</li>
+    <li>Sistemas de control de acceso y monitoreo de alarmas.</li>
+    <li>Redes de datos en entornos ruidosos o de larga distancia (hasta 1200 metros).</li>
+</ul>
+
+<h3>1.d) El protocolo TTL serial vs RS-232</h3>
+<div class="subsection-image">
+    <!-- Imagen para 1.d (1d.jpg) -->
+    <img src="1d.jpg" alt="Imagen 1.d - TTL vs RS-232">
+</div>
+<p>
+<strong>TTL Serial (Transistor-Transistor Logic):</strong><br>
+- Usa niveles de 0 V y 5 V (o en algunos casos 3.3 V). <br>
+- Se emplea típicamente en comunicación directa entre microcontroladores o dispositivos lógicos de baja potencia. <br>
+- No tolera longitudes de cable muy extensas ni altos niveles de ruido.
+</p>
+<p>
+<strong>RS-232:</strong><br>
+- Utiliza tensiones más altas y diferenciadas. Normalmente, un bit lógico ‘1’ puede ser representado por -12 V y un bit lógico ‘0’ por +12 V (valores aproximados; el estándar acepta rangos variados). <br>
+- Permite distancias más largas y es más resistente al ruido que TTL. <br>
+- Es el protocolo usado históricamente en puertos serie de computadoras.
+</p>
+
+<h3>1.e) Cómo leer un dato serial en un osciloscopio</h3>
+<div class="subsection-image">
+    <!-- Imagen para 1.e (1e.jpg) -->
+    <img src="1e.jpg" alt="Imagen 1.e - Cómo leer un dato serial en un osciloscopio">
+</div>
+<p>
+- Para observar un bit o la trama de bits en un osciloscopio, se debe conectar la punta de prueba (probe) al pin TX (transmisión) y la referencia de la sonda a tierra (GND). <br>
+- Ajustar el tiempo de barrido (<em>Time Base</em>) y la escala de voltaje (<em>Voltage Scale</em>) de modo que se puedan apreciar claramente los niveles altos y bajos. <br>
+- Usar el disparo (<em>Trigger</em>) correcto, preferentemente en modo borde descendente o ascendente según la trama, y ajustar el nivel de disparo (<em>Trigger Level</em>) para que se estabilice la señal en la pantalla. <br>
+- A partir de la captura de la señal, identificar los bits de inicio (<em>start</em>), bits de datos, bit de paridad (si aplica) y bits de parada. <br>
+- Contar y medir la duración de cada bit para verificar la velocidad en baudios configurada (por ejemplo, 9600 bps implica un período de bit de aproximadamente 104,17 microsegundos).
+</p>
+
+<hr>
+
+<h2>2. Desarrollo de la Experiencia</h2>
+
+
+
+<p>
+A continuación se describe paso a paso cómo realizar la experiencia de observar la transmisión serial en un osciloscopio, partiendo de la conexión física hasta el análisis de la señal.
+</p>
+
+<h3>2.a) Identificar el pin TX, RX y GND del conector DB9</h3>
+<div class="subsection-image">
+    <!-- Imagen para 2.a (2a.jpg) -->
+    <img src="2a.jpg" alt="Imagen 2.a - Identificación de pines DB9">
+</div>
+<p>
+1. El conector DB9, utilizado para RS-232, típicamente presenta la siguiente distribución de pines (vista externa, con los pines hacia nosotros):
+</p>
+<pre>
+    5 4 3 2 1
+    9 8 7 6
+</pre>
+<p>
+2. Generalmente: <br>
+   - <strong>Pin 2</strong>: RX (Recibe datos) <br>
+   - <strong>Pin 3</strong>: TX (Transmite datos) <br>
+   - <strong>Pin 5</strong>: GND (Tierra) <br>
+   Verificar la hoja de datos (datasheet) del adaptador o del dispositivo para confirmarlo, ya que a veces puede variar el número de pin para TX/RX.
+</p>
+<p>
+Para mayor claridad, a continuación se presenta una tabla con la asignación común:
+</p>
+<table>
+    <tr>
+        <th>Pin</th>
+        <th>Función (RS-232)</th>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>RX (Recibe datos)</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>TX (Transmite datos)</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>GND (Tierra)</td>
+    </tr>
+</table>
+
+<h3>2.b) Conectar el conector DB9 al convertidor USB</h3>
+<div class="subsection-image">
+    <!-- Imagen para 2.b (2b.jpg) -->
+    <img src="2b.jpg" style="width: 300px; height: auto;"  alt="Imagen 2.b - Conexión DB9 al convertidor USB">
+</div>
+<p>
+1. Asegurarse de que el adaptador USB a Serial sea del tipo RS-232 (a veces hay adaptadores USB a TTL que no manejan los mismos voltajes). <br>
+2. Conectar físicamente el DB9 hembra del adaptador al DB9 macho (o viceversa) del cable que se usará; o si el adaptador trae los pines DB9 incorporados, simplemente enchufarlo en el lugar adecuado. <br>
+3. Verificar que el cable no esté dañado y que la conexión sea firme para evitar falsas lecturas.
+</p>
+
+<h3>2.c) Usar el programa PuTTY para enviar un dato serial de forma continua</h3>
+<div class="subsection-image">
+    <!-- Imagen para 2.c (2c.jpg) -->
+    <img src="2c.jpg" alt="Imagen 2.c - Uso de PuTTY para transmisión serial">
+</div>
+<p>
+1. Instalar y/o abrir <strong>PuTTY</strong> en el computador. <br>
+2. En la pestaña <em>“Session”</em>, seleccionar la opción <em>“Serial”</em>. <br>
+3. Configurar el <strong>Puerto COM</strong> que corresponda al adaptador USB a Serial (por ejemplo, COM3, COM4, etc.). <br>
+4. Configurar la <strong>velocidad en baudios</strong> (por ejemplo, 9600). <br>
+5. Ingresar los mismos parámetros de comunicación (bits de datos, paridad, bits de parada) que se requieran (por ejemplo, 8 bits de datos, No paridad, 1 bit de parada). <br>
+6. Hacer clic en <em>“Open”</em> para iniciar la comunicación. <br>
+7. Desde la consola de PuTTY, escribir un carácter repetidamente o usar algún script que envíe datos de forma continua (por ejemplo, ‘A’ o cualquier carácter ASCII). Se puede presionar varias veces una tecla para observar la señal en el osciloscopio.
+</p>
+
+<h3>2.d) Conectar el osciloscopio y ajustarlo para ver un dato a 9600 baudios</h3>
+<div class="subsection-image">
+    <!-- Imagen para 2.d (2d.jpg) -->
+    <img src="2d.jpg" alt="Imagen 2.d - Conexión del osciloscopio">
+</div>
+<p>
+1. Con el dispositivo transmitiendo, conectar la punta de prueba del canal 1 del osciloscopio al <strong>pin TX</strong> del DB9 (o la señal de TX del adaptador). <br>
+2. Conectar la pinza de tierra (GND) de la sonda a <strong>GND</strong> (pin 5 del DB9). <br>
+3. Configurar el osciloscopio: <br>
+   - <strong>Volts/Div (Escala de voltaje)</strong>: Ajustar para que la señal de alrededor de ±10 V a ±12 V (RS-232) sea visible. <br>
+   - <strong>Time/Div (Escala de tiempo)</strong>: Empezar, por ejemplo, con 100 µs/div o 200 µs/div para ver con claridad cada bit a 9600 bps. <br>
+   - <strong>Trigger</strong>: Seleccionar modo de disparo en <em>Edge</em> y ubicar el nivel de disparo en una tensión intermedia (aprox. 0 V) para detectar las transiciones correctamente. <br>
+4. Debería verse una trama correspondiente al carácter que se está enviando. Cada bit durará alrededor de 104 µs.
+</p>
+
+<h3>2.e) Instrucciones para leer el dato desde el osciloscopio y reconstruir el dato binario</h3>
+<div class="subsection-image">
+    <!-- Imagen para 2.e (2e.jpg) -->
+    <img src="2e.jpg" alt="Imagen 2.e - Lectura del dato en el osciloscopio">
+</div>
+<p>
+1. <strong>Identificar el bit de inicio (Start Bit)</strong>: En RS-232 este bit es un nivel bajo (por encima de 0 V puede ser + voltaje; por debajo de 0 V es − voltaje, depende de la referencia en el osciloscopio). Normalmente se ve una transición desde el estado de reposo (inactivo) a un estado bajo. <br>
+2. <strong>Contar los bits de datos</strong>: Generalmente 8 bits, cada uno con una duración de aproximadamente 104 µs a 9600 bps. <br>
+3. <strong>Verificar bit de paridad (si aplica)</strong>: Puede estar presente como un bit adicional para paridad par o impar. <br>
+4. <strong>Verificar los bits de parada (Stop Bits)</strong>: Usualmente 1 o 2 bits en estado alto. <br>
+5. <strong>Anotar los niveles de voltaje</strong>: RS-232 inactivo (línea de TX en reposo) está en un nivel negativo (~ -12 V). Cuando se envía un bit de inicio, la línea pasa a un nivel positivo (~ +12 V), dependiendo del adaptador. (Recordar que en RS-232 los niveles están invertidos con respecto a TTL). <br>
+6. Para reconstruir el carácter, traducir cada bit de datos (teniendo en cuenta la polaridad invertida de RS-232) a la representación binaria y, posteriormente, al valor ASCII correspondiente.
+</p>
+
+<hr>
+
+<h2>3. Preguntas Finales</h2>
+
+<div class="section-image">
+    <!-- Imagen de la sección 3 (3.jpg) -->
+    <img src="3.jpg" style="width: 300px; height: auto;" alt="Imagen Sección 3 - Preguntas Finales">
+</div>
+
+<p>
+A continuación se sugieren cinco preguntas de distintos niveles de complejidad cognitiva:
+</p>
+<ol>
+    <li><strong>(Nivel Conocimiento)</strong>
+        <br>¿Cuáles son los pines clave del conector DB9 para la comunicación serial RS-232?
+    </li>
+    <li><strong>(Nivel Comprensión)</strong>
+        <br>Explica por qué el bit de inicio (Start Bit) en RS-232 es típicamente un nivel bajo y cómo se representa en la forma de onda.
+    </li>
+    <li><strong>(Nivel Aplicación)</strong>
+        <br>Si configuramos la comunicación a 19200 bps en lugar de 9600 bps, ¿qué cambios tendríamos que realizar en el osciloscopio para observar correctamente la señal?
+    </li>
+    <li><strong>(Nivel Análisis)</strong>
+        <br>Describe el proceso para distinguir el bit de paridad dentro de la trama capturada en el osciloscopio y cómo determinar si es par o impar.
+    </li>
+    <li><strong>(Nivel Evaluación/Síntesis)</strong>
+        <br>Propón una forma de verificar la integridad de la señal cuando se transmita a largas distancias mediante RS-232 y compara esta solución con el uso de un estándar como RS-485.
+    </li>
+</ol>
+
+<hr>
+
+<h2>4. Elaboración del Informe Técnico de Laboratorio</h2>
+
+<div class="section-image">
+    <!-- Imagen de la sección 4 (4.jpg) -->
+    <img src="4.jpg" alt="Imagen Sección 4 - Informe Técnico de Laboratorio">
+</div>
+
+<p>
+Para concluir, se recomienda la siguiente estructura en la redacción del informe técnico de la práctica:
+</p>
+
+<h3>4.a) Portada</h3>
+
+<p>
+- <strong>Título</strong>: “Análisis de señal de transmisión serial RS-232 mediante osciloscopio”.<br>
+- <strong>Nombre de la institución</strong>, departamento o asignatura.<br>
+- <strong>Integrantes</strong> y fecha de realización del laboratorio.<br>
+- <strong>Docente</strong> o persona encargada.
+</p>
+
+<h3>4.b) Declaración de Objetivos</h3>
+
+<p>
+- Incluir el <strong>objetivo general</strong> (analizar una señal de transmisión serial usando osciloscopio, computador y adaptador USB a serial).<br>
+- Enumerar <strong>objetivos específicos</strong>, por ejemplo:
+</p>
+<ol>
+    <li>Identificar correctamente los pines TX, RX y GND en el conector DB9.</li>
+    <li>Configurar y operar el programa PuTTY para envío de datos en serie.</li>
+    <li>Ajustar el osciloscopio para capturar la trama de datos y reconocer cada bit.</li>
+    <li>Reconstruir el carácter transmitido a partir de la señal observada.</li>
+</ol>
+
+<h3>4.c) Marco Teórico</h3>
+
+<p>
+- Desarrollo de los puntos mencionados en la sección 1: <br>
+  - Principios de transmisión serial (RS-232 vs TTL). <br>
+  - Parámetros principales: baud rate, bits de datos, paridad, bit de parada. <br>
+  - Nivel de voltajes RS-232. <br>
+  - Relevancia del protocolo en el ámbito industrial y de comunicaciones.
+</p>
+
+<h3>4.d) Desarrollo (Lectura del dato desde el osciloscopio)</h3>
+
+<p>
+- Descripción de los <strong>procedimientos</strong> realizados.<br>
+- <strong>Configuración</strong> del software PuTTY.<br>
+- <strong>Conexiones</strong> físicas (DB9, USB, osciloscopio).<br>
+- Ajustes detallados en el <strong>osciloscopio</strong> (escala de tiempo, voltaje, disparo, etc.).<br>
+- Capturas de pantalla o fotografías (si se permite) de la señal en el osciloscopio.<br>
+- <strong>Análisis de la trama</strong>:  
+  <ul>
+    <li>Duración medida de cada bit.</li>
+    <li>Confirmación de la velocidad en baudios.</li>
+    <li>Identificación de Start, Data, Paridad (si aplica) y Stop bits.</li>
+    <li>Interpretación del carácter ASCII resultante.</li>
+  </ul>
+</p>
+
+<h3>4.e) Conclusión</h3>
+
+<p>
+- Evaluar si se cumplieron los objetivos.<br>
+- Resumir los hallazgos (por ejemplo, la importancia de la correcta configuración de parámetros).<br>
+- Mencionar posibles <strong>dificultades y soluciones</strong> propuestas (ruido, inestabilidad de la señal, equivocaciones al asignar TX/RX).
+</p>
+
+<h3>4.f) Fuentes Bibliográficas</h3>
+
+<p>
+- Citar manuales, páginas de referencia confiables (si se utilizaron), datasheets de adaptadores USB a serial, artículos de IEEE u otras fuentes académicas.<br>
+- Asegurarse de cumplir con el estilo de referencia pedido (APA, IEEE, u otro formato).
+</p>
+
+
+
+</body>
+</html>
