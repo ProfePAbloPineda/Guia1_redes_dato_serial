@@ -2,418 +2,1154 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Guía de laboratorio - Análisis de Señal de Transmisión Serial</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Pablo Pineda Valdebenito">
+    <title>Guía de Laboratorio - Análisis de Señal de Transmisión Serial</title>
     <style>
-        /* General Styles */
+        /* ========================================
+           VARIABLES Y ESTILOS GENERALES
+           ======================================== */
+        :root {
+            --color-primario: #1e3a8a;
+            --color-secundario: #3b82f6;
+            --color-acento: #f59e0b;
+            --color-exito: #10b981;
+            --color-fondo: #f8fafc;
+            --color-texto: #1e293b;
+            --color-borde: #cbd5e1;
+            --sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            line-height: 1.5;
-            background-color: #F9FBFC;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--color-texto);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        h1 {
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--sombra-lg);
+            overflow: hidden;
+        }
+
+        /* ========================================
+           HEADER
+           ======================================== */
+        .header {
+            background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            color: white;
+            padding: 50px 40px;
             text-align: center;
-            color: #2C3E50;
-            margin-bottom: 0.5em;
+            position: relative;
+            overflow: hidden;
         }
-        h2 {
-            color: #2980B9;
-            border-left: 5px solid #2980B9;
-            padding-left: 10px;
-            margin-top: 1.5em;
-            margin-bottom: 0.8em;
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
         }
-        h3 {
-            color: #C0392B;
-            margin-top: 1.2em;
-            margin-bottom: 0.5em;
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
-        p, li {
-            text-align: justify;
-            margin-bottom: 0.8em;
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
-        ul, ol {
-            margin-left: 2em;
+
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
         }
-        hr {
-            margin: 2em 0;
-            border: none;
-            border-top: 2px solid #BDC3C7;
+
+        .header .objetivo-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
         }
-        /* Image Styles */
-        .section-image, .subsection-image {
-            text-align: center;
-            margin: 1em 0;
-        }
-        img {
+
+        .header .objetivo-box strong {
             display: block;
-            margin: 10px auto;
-            width: 400px;
-            height: auto;
-            border: 2px solid #BDC3C7;
-            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: var(--color-acento);
         }
-        /* Table Styles */
+
+        /* ========================================
+           CONTENIDO PRINCIPAL
+           ======================================== */
+        .content {
+            padding: 50px 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            color: white;
+            padding: 18px 30px;
+            margin: 40px -40px 30px -40px;
+            font-size: 1.5em;
+            font-weight: 700;
+            border-left: 6px solid var(--color-acento);
+            page-break-after: avoid;
+            position: relative;
+        }
+
+        .section-title::before {
+            content: '▸';
+            margin-right: 10px;
+            color: var(--color-acento);
+        }
+
+        .subsection-title {
+            color: var(--color-primario);
+            font-size: 1.3em;
+            margin: 30px 0 18px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--color-borde);
+            font-weight: 600;
+            page-break-after: avoid;
+        }
+
+        .subsection-title-numbered {
+            color: var(--color-primario);
+            font-size: 1.15em;
+            margin: 25px 0 15px 0;
+            font-weight: 600;
+            page-break-after: avoid;
+            display: flex;
+            align-items: center;
+        }
+
+        .subsection-title-numbered::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--color-acento);
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        /* ========================================
+           ELEMENTOS DE TEXTO
+           ======================================== */
+        p {
+            margin-bottom: 18px;
+            text-align: justify;
+            line-height: 1.8;
+        }
+
+        ul, ol {
+            margin: 20px 0 20px 35px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        strong {
+            color: var(--color-primario);
+            font-weight: 600;
+        }
+
+        /* ========================================
+           TABLAS
+           ======================================== */
+        .table-container {
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 10px;
+            box-shadow: var(--sombra);
+            page-break-inside: avoid;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 1em 0;
-            background-color: #FFFFFF;
+            background: white;
         }
-        table, th, td {
-            border: 1px solid #DDD;
+
+        thead {
+            background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            color: white;
         }
+
         th {
-            background-color: #ECF0F1;
-            color: #333;
-            font-weight: bold;
-        }
-        th, td {
-            padding: 8px;
+            padding: 15px 20px;
             text-align: left;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
         }
-        /* Highlight some key parts */
-        strong {
-            color: #8E44AD;
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--color-borde);
         }
-        em {
-            color: #16A085;
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f1f5f9;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        /* ========================================
+           IMÁGENES
+           ======================================== */
+        .image-container {
+            text-align: center;
+            margin: 35px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 12px;
+            border: 3px dashed var(--color-borde);
+            page-break-inside: avoid;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .image-container:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--sombra-lg);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: var(--sombra);
+            border: 2px solid white;
+        }
+
+        .image-caption {
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: #64748b;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .image-grid .image-container {
+            margin: 0;
+        }
+
+        /* ========================================
+           CAJAS DE INFORMACIÓN
+           ======================================== */
+        .objetivo-general {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 6px solid var(--color-acento);
+            padding: 25px 30px;
+            margin: 30px 0;
+            border-radius: 0 12px 12px 0;
+            box-shadow: var(--sombra);
+        }
+
+        .objetivo-general strong {
+            color: var(--color-primario);
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-left: 5px solid var(--color-secundario);
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: var(--sombra);
+        }
+
+        .info-box strong {
+            color: var(--color-primario);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 5px solid var(--color-acento);
+            padding: 20px 25px;
+            margin: 25px 0;
+            border-radius: 0 10px 10px 0;
+            box-shadow: var(--sombra);
+        }
+
+        .warning-box strong {
+            color: var(--color-primario);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .comparison-box {
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: var(--sombra);
+        }
+
+        .comparison-box.ttl {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+        }
+
+        .comparison-box.rs232 {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 2px solid var(--color-secundario);
+        }
+
+        .comparison-box strong {
+            color: var(--color-primario);
+            display: block;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        /* ========================================
+           LISTAS NUMERADAS PERSONALIZADAS
+           ======================================== */
+        .step-list {
+            counter-reset: step;
+            list-style: none;
+            margin: 25px 0;
+            padding: 0;
+        }
+
+        .step-list li {
+            counter-increment: step;
+            padding-left: 70px;
+            position: relative;
+            margin-bottom: 25px;
+            padding: 20px 20px 20px 70px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 10px;
+            border-left: 5px solid var(--color-secundario);
+            box-shadow: var(--sombra);
+            transition: transform 0.2s;
+        }
+
+        .step-list li:hover {
+            transform: translateX(5px);
+        }
+
+        .step-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* ========================================
+           PREGUNTAS
+           ======================================== */
+        .question-box {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid var(--color-secundario);
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .question-box:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--sombra-lg);
+        }
+
+        .question-level {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--color-secundario) 0%, var(--color-primario) 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: var(--color-primario);
+            margin-right: 8px;
+        }
+
+        /* ========================================
+           CÓDIGO Y DATOS TÉCNICOS
+           ======================================== */
+        code {
+            background: #1e293b;
+            color: #10b981;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', 'Consolas', monospace;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .technical-data {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            font-family: 'Courier New', 'Consolas', monospace;
+            box-shadow: var(--sombra);
+            overflow-x: auto;
+        }
+
+        /* ========================================
+           FOOTER
+           ======================================== */
+        .footer {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 35px 40px;
+            text-align: center;
+            border-top: 4px solid var(--color-borde);
+            color: #64748b;
+            font-size: 0.95em;
+        }
+
+        .footer strong {
+            color: var(--color-primario);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* ========================================
+           BOTONES DE ACCIÓN
+           ======================================== */
+        .action-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+            color: white;
+            border: none;
+            padding: 15px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* ========================================
+           ESTILOS DE IMPRESIÓN
+           ======================================== */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                font-size: 11pt;
+                line-height: 1.5;
+            }
+
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+                border-radius: 0;
+            }
+
+            .header {
+                background: var(--color-primario) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                padding: 30px;
+            }
+
+            .header::before {
+                display: none;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .header .objetivo-box {
+                background: rgba(255, 255, 255, 0.2);
+                border: 2px solid white;
+            }
+
+            .content {
+                padding: 30px;
+            }
+
+            .section-title {
+                background: var(--color-primario) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 30px -30px 20px -30px;
+                padding: 15px 30px;
+                font-size: 1.3em;
+                page-break-after: avoid;
+            }
+
+            .section {
+                page-break-inside: avoid;
+                margin-bottom: 35px;
+            }
+
+            .subsection-title,
+            .subsection-title-numbered {
+                page-break-after: avoid;
+                margin: 20px 0 12px 0;
+            }
+
+            .objetivo-general,
+            .info-box,
+            .warning-box,
+            .question-box,
+            .comparison-box {
+                page-break-inside: avoid;
+                border: 1px solid #999;
+            }
+
+            .step-list li {
+                page-break-inside: avoid;
+                border: 1px solid #ddd;
+                padding: 12px;
+            }
+
+            table {
+                page-break-inside: auto;
+                font-size: 10pt;
+            }
+
+            thead {
+                display: table-header-group;
+                background: var(--color-primario) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            tr {
+                page-break-inside: avoid;
+            }
+
+            .image-container {
+                page-break-inside: avoid;
+                border: 2px solid #999;
+                margin: 20px 0;
+            }
+
+            .image-container:hover {
+                transform: none;
+                box-shadow: none;
+            }
+
+            .action-buttons {
+                display: none !important;
+            }
+
+            a {
+                text-decoration: none;
+                color: black;
+            }
+
+            .footer {
+                page-break-before: avoid;
+            }
+
+            @page {
+                margin: 2cm;
+                size: A4;
+            }
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 10px;
+            }
+
+            .content {
+                padding: 25px 20px;
+            }
+
+            .header {
+                padding: 35px 25px;
+            }
+
+            .header h1 {
+                font-size: 1.6em;
+            }
+
+            .header .subtitle {
+                font-size: 1.1em;
+            }
+
+            .section-title {
+                margin: 25px -20px 20px -20px;
+                padding: 15px 20px;
+                font-size: 1.2em;
+            }
+
+            .image-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .step-list li {
+                padding-left: 60px;
+                padding: 15px 15px 15px 60px;
+            }
+
+            .step-list li::before {
+                width: 35px;
+                height: 35px;
+                left: 12px;
+                font-size: 1em;
+            }
+
+            .action-buttons {
+                bottom: 20px;
+                right: 20px;
+                flex-direction: column;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section {
+            animation: fadeIn 0.6s ease-out;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <!-- HEADER -->
+        <header class="header">
+            <h1>🔌 Guía de Laboratorio</h1>
+            <p class="subtitle">Análisis de Señal de Transmisión Serial</p>
+            <div class="objetivo-box">
+                <strong>🎯 Objetivo General</strong>
+                Analizar una señal de transmisión serial por medio de un osciloscopio, utilizando un computador, un adaptador USB a Serial, un conector DB9 y el programa PuTTY.
+            </div>
+            <div style="margin-top: 20px; font-size: 0.95em; opacity: 0.9;">
+                <p><strong>Arquitectura de Comunicaciones Industriales</strong></p>
+                <p>Ramo: SCADA | Área: Electrónica, Automatización y Robótica</p>
+            </div>
+        </header>
 
-<h1>Guía de laboratorio:Arquitectura de comunicaciones industriales</h1>
-<p>
-El objetivo general es <strong>analizar una señal de transmisión serial</strong> por medio de un osciloscopio, utilizando un computador, un adaptador USB a Serial, un conector DB9 y el programa PuTTY.
-</p>
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="content">
+            <!-- SECCIÓN 1: MARCO TEÓRICO -->
+            <section class="section">
+                <h2 class="section-title">1. Marco Teórico</h2>
+                <p>En esta sección se detallan los fundamentos necesarios para comprender el experimento de transmisión serial y su observación en un osciloscopio.</p>
 
-<hr>
+                <h3 class="subsection-title-numbered">1.a) El dato digital serial</h3>
+                <ul>
+                    <li>La comunicación serial es un método de transmisión de datos en el cual la información se envía bit a bit a través de un solo canal o línea de comunicación.</li>
+                    <li>En contraposición a la comunicación paralela (donde varios bits se transmiten simultáneamente por múltiples líneas), la serial utiliza menos conductores y es común en largas distancias.</li>
+                    <li>La velocidad de transferencia de datos se mide en bits por segundo (bps o baudios), siendo 9600, 19200 o 115200 bps valores típicos.</li>
+                </ul>
 
-<h2>1. Marco Teórico</h2>
+                <div class="image-container">
+                    <img src="1.jpg" alt="Diagrama de transmisión serial entre sistemas">
+                    <p class="image-caption">Figura 1: Transmisión de datos serial entre Sistema 1 y Sistema 2</p>
+                </div>
 
-<div class="section-image">
-    <!-- Imagen de la sección 1 (1.jpg) -->
-    <img src="1.jpg" alt="Imagen Sección 1 - Marco Teórico">
-</div>
+                <h3 class="subsection-title-numbered">1.b) Parámetros de la comunicación serial asíncrona</h3>
+                <p>En la siguiente tabla se resumen los parámetros principales de la comunicación serial asíncrona:</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Velocidad en baudios</strong></td>
+                                <td>Es la frecuencia de símbolo o bits por segundo (por ejemplo, 9600 bps).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bits de datos</strong></td>
+                                <td>Generalmente 7 u 8 bits de datos por trama.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bit de paridad</strong></td>
+                                <td>Puede ser None (ninguna), Even (par), Odd (impar).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bits de parada</strong></td>
+                                <td>Por lo general 1 o 2 bits de parada.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Flujo de control</strong></td>
+                                <td>Puede ser ninguno, por hardware (RTS/CTS) o por software (XON/XOFF).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-<p>
-En esta sección se detallan los fundamentos necesarios para comprender el experimento de transmisión serial y su observación en un osciloscopio.
-</p>
+                <div class="info-box">
+                    <strong>💡 Importante:</strong> Estos parámetros deben ser configurados de la misma manera en ambos dispositivos que se comunican para que la transmisión y recepción de datos sea correcta.
+                </div>
 
-<h3>1.a) El dato digital serial</h3>
-<div class="subsection-image">
-    <!-- Imagen para 1.a (1a.jpg) -->
-    <img src="1a.jpg" alt="Imagen 1.a - El dato digital serial">
-</div>
-<p>
-- La comunicación serial es un método de transmisión de datos en el cual la información se envía bit a bit a través de un solo canal o línea de comunicación. <br>
-- En contraposición a la comunicación paralela (donde varios bits se transmiten simultáneamente por múltiples líneas), la serial utiliza menos conductores y es común en largas distancias. <br>
-- La velocidad de transferencia de datos se mide en bits por segundo (bps o baudios), siendo 9600, 19200 o 115200 bps valores típicos.
-</p>
+                <div class="image-container">
+                    <img src="1a.jpg" alt="Parámetros de comunicación serial">
+                    <p class="image-caption">Figura 1a: Parámetros de configuración de comunicación serial</p>
+                </div>
 
-<h3>1.b) Parámetros de la comunicación serial asíncrona</h3>
-<div class="subsection-image">
-    <!-- Imagen para 1.b (1b.jpg) -->
-    <img src="1b.jpg" alt="Imagen 1.b - Parámetros de la comunicación serial">
-</div>
-<p>
-En la siguiente tabla se resumen los parámetros principales de la comunicación serial asíncrona:
-</p>
-<table>
-    <tr>
-        <th>Parámetro</th>
-        <th>Descripción</th>
-    </tr>
-    <tr>
-        <td>Velocidad en baudios</td>
-        <td>Es la frecuencia de símbolo o bits por segundo (por ejemplo, 9600 bps).</td>
-    </tr>
-    <tr>
-        <td>Bits de datos</td>
-        <td>Generalmente 7 u 8 bits de datos por trama.</td>
-    </tr>
-    <tr>
-        <td>Bit de paridad</td>
-        <td>Puede ser None (ninguna), Even (par), Odd (impar).</td>
-    </tr>
-    <tr>
-        <td>Bits de parada</td>
-        <td>Por lo general 1 o 2 bits de parada.</td>
-    </tr>
-    <tr>
-        <td>Flujo de control</td>
-        <td>Puede ser ninguno, por hardware (RTS/CTS) o por software (XON/XOFF).</td>
-    </tr>
-</table>
-<p>
-Estos parámetros deben ser configurados de la misma manera en ambos dispositivos que se comunican para que la transmisión y recepción de datos sea correcta.
-</p>
+                <h3 class="subsection-title-numbered">1.c) Ejemplos de dispositivos que usan la transmisión serial RS-232 o RS-485</h3>
+                
+                <h4 style="color: var(--color-primario); margin: 20px 0 12px 0; font-weight: 600;">🔌 RS-232:</h4>
+                <ul>
+                    <li>Computadoras antiguas con puertos COM integrados.</li>
+                    <li>Equipos de instrumentación, como algunos osciloscopios, analizadores lógicos, routers, etc.</li>
+                    <li>Dispositivos de control industrial que intercambian datos a cortas distancias.</li>
+                </ul>
 
-<h3>1.c) Ejemplos de dispositivos que usan la transmisión serial RS-232 o RS-485</h3>
-<div class="subsection-image">
-    <!-- Imagen para 1.c (1c.jpg) -->
-    <img src="1c.jpg" alt="Imagen 1.c - Ejemplos de dispositivos que usan RS-232 o RS-485">
-</div>
-<p><strong>RS-232:</strong></p>
-<ul>
-    <li>Computadoras antiguas con puertos COM integrados.</li>
-    <li>Equipos de instrumentación, como algunos osciloscopios, analizadores lógicos, routers, etc.</li>
-    <li>Dispositivos de control industrial que intercambian datos a cortas distancias.</li>
-</ul>
-<p><strong>RS-485:</strong></p>
-<ul>
-    <li>Sistemas de control industrial y automatización (PLC, sensores industriales).</li>
-    <li>Sistemas de control de acceso y monitoreo de alarmas.</li>
-    <li>Redes de datos en entornos ruidosos o de larga distancia (hasta 1200 metros).</li>
-</ul>
+                <h4 style="color: var(--color-primario); margin: 20px 0 12px 0; font-weight: 600;">📡 RS-485:</h4>
+                <ul>
+                    <li>Sistemas de control industrial y automatización (PLC, sensores industriales).</li>
+                    <li>Sistemas de control de acceso y monitoreo de alarmas.</li>
+                    <li>Redes de datos en entornos ruidosos o de larga distancia (hasta 1200 metros).</li>
+                </ul>
 
-<h3>1.d) El protocolo TTL serial vs RS-232</h3>
-<div class="subsection-image">
-    <!-- Imagen para 1.d (1d.jpg) -->
-    <img src="1d.jpg" alt="Imagen 1.d - TTL vs RS-232">
-</div>
-<p>
-<strong>TTL Serial (Transistor-Transistor Logic):</strong><br>
-- Usa niveles de 0 V y 5 V (o en algunos casos 3.3 V). <br>
-- Se emplea típicamente en comunicación directa entre microcontroladores o dispositivos lógicos de baja potencia. <br>
-- No tolera longitudes de cable muy extensas ni altos niveles de ruido.
-</p>
-<p>
-<strong>RS-232:</strong><br>
-- Utiliza tensiones más altas y diferenciadas. Normalmente, un bit lógico ‘1’ puede ser representado por -12 V y un bit lógico ‘0’ por +12 V (valores aproximados; el estándar acepta rangos variados). <br>
-- Permite distancias más largas y es más resistente al ruido que TTL. <br>
-- Es el protocolo usado históricamente en puertos serie de computadoras.
-</p>
+                <div class="image-container">
+                    <img src="1b.jpg" alt="Dispositivos RS-232 y RS-485">
+                    <p class="image-caption">Figura 1b: Dispositivos que utilizan comunicación serial industrial</p>
+                </div>
 
-<h3>1.e) Cómo leer un dato serial en un osciloscopio</h3>
-<div class="subsection-image">
-    <!-- Imagen para 1.e (1e.jpg) -->
-    <img src="1e.jpg" alt="Imagen 1.e - Cómo leer un dato serial en un osciloscopio">
-</div>
-<p>
-- Para observar un bit o la trama de bits en un osciloscopio, se debe conectar la punta de prueba (probe) al pin TX (transmisión) y la referencia de la sonda a tierra (GND). <br>
-- Ajustar el tiempo de barrido (<em>Time Base</em>) y la escala de voltaje (<em>Voltage Scale</em>) de modo que se puedan apreciar claramente los niveles altos y bajos. <br>
-- Usar el disparo (<em>Trigger</em>) correcto, preferentemente en modo borde descendente o ascendente según la trama, y ajustar el nivel de disparo (<em>Trigger Level</em>) para que se estabilice la señal en la pantalla. <br>
-- A partir de la captura de la señal, identificar los bits de inicio (<em>start</em>), bits de datos, bit de paridad (si aplica) y bits de parada. <br>
-- Contar y medir la duración de cada bit para verificar la velocidad en baudios configurada (por ejemplo, 9600 bps implica un período de bit de aproximadamente 104,17 microsegundos).
-</p>
+                <h3 class="subsection-title-numbered">1.d) El protocolo TTL serial vs RS-232</h3>
+                
+                <div class="comparison-grid">
+                    <div class="comparison-box ttl">
+                        <strong>🔌 TTL Serial</strong>
+                        <ul style="margin: 0; font-size: 0.95em;">
+                            <li>Usa niveles de 0 V y 5 V (o 3.3 V)</li>
+                            <li>Comunicación entre microcontroladores</li>
+                            <li>Baja potencia</li>
+                            <li>Cortas distancias</li>
+                            <li>Sensible al ruido</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-box rs232">
+                        <strong>⚡ RS-232</strong>
+                        <ul style="margin: 0; font-size: 0.95em;">
+                            <li>Niveles: -12V (lógico 1) y +12V (lógico 0)</li>
+                            <li>Mayores distancias</li>
+                            <li>Más resistente al ruido</li>
+                            <li>Puertos serie tradicionales</li>
+                            <li>Voltajes más altos</li>
+                        </ul>
+                    </div>
+                </div>
 
-<hr>
+                <div class="image-container">
+                    <img src="1c.jpg" alt="Comparación TTL vs RS-232">
+                    <p class="image-caption">Figura 1c: Comparación de niveles de voltaje entre TTL y RS-232</p>
+                </div>
 
-<h2>2. Desarrollo de la Experiencia</h2>
+                <h3 class="subsection-title-numbered">1.e) Cómo leer un dato serial en un osciloscopio</h3>
+                <ol class="step-list">
+                    <li>Conectar la punta de prueba (probe) al pin <strong>TX</strong> (transmisión) y la referencia de la sonda a tierra (<strong>GND</strong>).</li>
+                    <li>Ajustar el tiempo de barrido (<em>Time Base</em>) y la escala de voltaje (<em>Voltage Scale</em>) de modo que se puedan apreciar claramente los niveles altos y bajos.</li>
+                    <li>Usar el disparo (<em>Trigger</em>) correcto, preferentemente en modo borde descendente o ascendente según la trama, y ajustar el nivel de disparo.</li>
+                    <li>Identificar los bits de inicio (<em>start</em>), bits de datos, bit de paridad (si aplica) y bits de parada.</li>
+                    <li>Contar y medir la duración de cada bit para verificar la velocidad en baudios configurada (9600 bps ≈ 104,17 μs por bit).</li>
+                </ol>
 
+                <div class="image-container">
+                    <img src="1d.jpg" alt="Captura de osciloscopio mostrando señal serial">
+                    <p class="image-caption">Figura 1d: Visualización de trama serial en osciloscopio</p>
+                </div>
 
+                <div class="image-container">
+                    <img src="1e.jpg" alt="Anatomía de una trama serial">
+                    <p class="image-caption">Figura 1e: Anatomía de una trama de comunicación serial asíncrona</p>
+                </div>
+            </section>
 
-<p>
-A continuación se describe paso a paso cómo realizar la experiencia de observar la transmisión serial en un osciloscopio, partiendo de la conexión física hasta el análisis de la señal.
-</p>
+            <!-- SECCIÓN 2: DESARROLLO -->
+            <section class="section">
+                <h2 class="section-title">2. Desarrollo de la Experiencia</h2>
+                <p>A continuación se describe paso a paso cómo realizar la experiencia de observar la transmisión serial en un osciloscopio.</p>
 
-<h3>2.a) Identificar el pin TX, RX y GND del conector DB9</h3>
-<div class="subsection-image">
-    <!-- Imagen para 2.a (2a.jpg) -->
-    <img src="2a.jpg" alt="Imagen 2.a - Identificación de pines DB9">
-</div>
-<p>
-1. El conector DB9, utilizado para RS-232, típicamente presenta la siguiente distribución de pines (vista externa, con los pines hacia nosotros):
-</p>
-<pre>
+                <h3 class="subsection-title-numbered">2.a) Identificar el pin TX, RX y GND del conector DB9</h3>
+                
+                <div class="technical-data" style="text-align: center; font-size: 1.2em; margin: 20px 0;">
+                    <pre>Vista externa del conector DB9:
+
     5 4 3 2 1
-    9 8 7 6
-</pre>
-<p>
-2. Generalmente: <br>
-   - <strong>Pin 2</strong>: RX (Recibe datos) <br>
-   - <strong>Pin 3</strong>: TX (Transmite datos) <br>
-   - <strong>Pin 5</strong>: GND (Tierra) <br>
-   Verificar la hoja de datos (datasheet) del adaptador o del dispositivo para confirmarlo, ya que a veces puede variar el número de pin para TX/RX.
-</p>
-<p>
-Para mayor claridad, a continuación se presenta una tabla con la asignación común:
-</p>
-<table>
-    <tr>
-        <th>Pin</th>
-        <th>Función (RS-232)</th>
-    </tr>
-    <tr>
-        <td>2</td>
-        <td>RX (Recibe datos)</td>
-    </tr>
-    <tr>
-        <td>3</td>
-        <td>TX (Transmite datos)</td>
-    </tr>
-    <tr>
-        <td>5</td>
-        <td>GND (Tierra)</td>
-    </tr>
-</table>
+    9 8 7 6</pre>
+                </div>
 
-<h3>2.b) Conectar el conector DB9 al convertidor USB</h3>
-<div class="subsection-image">
-    <!-- Imagen para 2.b (2b.jpg) -->
-    <img src="2b.jpg" style="width: 300px; height: auto;"  alt="Imagen 2.b - Conexión DB9 al convertidor USB">
-</div>
-<p>
-1. Asegurarse de que el adaptador USB a Serial sea del tipo RS-232 (a veces hay adaptadores USB a TTL que no manejan los mismos voltajes). <br>
-2. Conectar físicamente el DB9 hembra del adaptador al DB9 macho (o viceversa) del cable que se usará; o si el adaptador trae los pines DB9 incorporados, simplemente enchufarlo en el lugar adecuado. <br>
-3. Verificar que el cable no esté dañado y que la conexión sea firme para evitar falsas lecturas.
-</p>
+                <div class="image-grid">
+                    <div class="image-container">
+                        <img src="2a.jpg" alt="Conector DB9 hembra">
+                        <p class="image-caption">Conector DB9 Hembra</p>
+                    </div>
+                    <div class="image-container">
+                        <img src="2b.jpg" alt="Conector DB9 macho">
+                        <p class="image-caption">Conector DB9 Macho</p>
+                    </div>
+                </div>
 
-<h3>2.c) Usar el programa PuTTY para enviar un dato serial de forma continua</h3>
-<div class="subsection-image">
-    <!-- Imagen para 2.c (2c.jpg) -->
-    <img src="2c.jpg" alt="Imagen 2.c - Uso de PuTTY para transmisión serial">
-</div>
-<p>
-1. Instalar y/o abrir <strong>PuTTY</strong> en el computador. <br>
-2. En la pestaña <em>“Session”</em>, seleccionar la opción <em>“Serial”</em>. <br>
-3. Configurar el <strong>Puerto COM</strong> que corresponda al adaptador USB a Serial (por ejemplo, COM3, COM4, etc.). <br>
-4. Configurar la <strong>velocidad en baudios</strong> (por ejemplo, 9600). <br>
-5. Ingresar los mismos parámetros de comunicación (bits de datos, paridad, bits de parada) que se requieran (por ejemplo, 8 bits de datos, No paridad, 1 bit de parada). <br>
-6. Hacer clic en <em>“Open”</em> para iniciar la comunicación. <br>
-7. Desde la consola de PuTTY, escribir un carácter repetidamente o usar algún script que envíe datos de forma continua (por ejemplo, ‘A’ o cualquier carácter ASCII). Se puede presionar varias veces una tecla para observar la señal en el osciloscopio.
-</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pin</th>
+                                <th>Función (RS-232)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>2</strong></td>
+                                <td>RX (Recibe datos)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3</strong></td>
+                                <td>TX (Transmite datos)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>5</strong></td>
+                                <td>GND (Tierra)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-<h3>2.d) Conectar el osciloscopio y ajustarlo para ver un dato a 9600 baudios</h3>
-<div class="subsection-image">
-    <!-- Imagen para 2.d (2d.jpg) -->
-    <img src="2d.jpg" alt="Imagen 2.d - Conexión del osciloscopio">
-</div>
-<p>
-1. Con el dispositivo transmitiendo, conectar la punta de prueba del canal 1 del osciloscopio al <strong>pin TX</strong> del DB9 (o la señal de TX del adaptador). <br>
-2. Conectar la pinza de tierra (GND) de la sonda a <strong>GND</strong> (pin 5 del DB9). <br>
-3. Configurar el osciloscopio: <br>
-   - <strong>Volts/Div (Escala de voltaje)</strong>: Ajustar para que la señal de alrededor de ±10 V a ±12 V (RS-232) sea visible. <br>
-   - <strong>Time/Div (Escala de tiempo)</strong>: Empezar, por ejemplo, con 100 µs/div o 200 µs/div para ver con claridad cada bit a 9600 bps. <br>
-   - <strong>Trigger</strong>: Seleccionar modo de disparo en <em>Edge</em> y ubicar el nivel de disparo en una tensión intermedia (aprox. 0 V) para detectar las transiciones correctamente. <br>
-4. Debería verse una trama correspondiente al carácter que se está enviando. Cada bit durará alrededor de 104 µs.
-</p>
+                <div class="warning-box">
+                    <strong>⚠️ Verificación:</strong> Siempre verificar la hoja de datos (datasheet) del adaptador o del dispositivo, ya que a veces puede variar el número de pin para TX/RX.
+                </div>
 
-<h3>2.e) Instrucciones para leer el dato desde el osciloscopio y reconstruir el dato binario</h3>
-<div class="subsection-image">
-    <!-- Imagen para 2.e (2e.jpg) -->
-    <img src="2e.jpg" alt="Imagen 2.e - Lectura del dato en el osciloscopio">
-</div>
-<p>
-1. <strong>Identificar el bit de inicio (Start Bit)</strong>: En RS-232 este bit es un nivel bajo (por encima de 0 V puede ser + voltaje; por debajo de 0 V es − voltaje, depende de la referencia en el osciloscopio). Normalmente se ve una transición desde el estado de reposo (inactivo) a un estado bajo. <br>
-2. <strong>Contar los bits de datos</strong>: Generalmente 8 bits, cada uno con una duración de aproximadamente 104 µs a 9600 bps. <br>
-3. <strong>Verificar bit de paridad (si aplica)</strong>: Puede estar presente como un bit adicional para paridad par o impar. <br>
-4. <strong>Verificar los bits de parada (Stop Bits)</strong>: Usualmente 1 o 2 bits en estado alto. <br>
-5. <strong>Anotar los niveles de voltaje</strong>: RS-232 inactivo (línea de TX en reposo) está en un nivel negativo (~ -12 V). Cuando se envía un bit de inicio, la línea pasa a un nivel positivo (~ +12 V), dependiendo del adaptador. (Recordar que en RS-232 los niveles están invertidos con respecto a TTL). <br>
-6. Para reconstruir el carácter, traducir cada bit de datos (teniendo en cuenta la polaridad invertida de RS-232) a la representación binaria y, posteriormente, al valor ASCII correspondiente.
-</p>
+                <h3 class="subsection-title-numbered">2.b) Conectar el conector DB9 al convertidor USB</h3>
+                <ol class="step-list">
+                    <li>Asegurarse de que el adaptador USB a Serial sea del tipo <strong>RS-232</strong> (no TTL).</li>
+                    <li>Conectar físicamente el DB9 hembra del adaptador al DB9 macho del cable.</li>
+                    <li>Verificar que el cable no esté dañado y que la conexión sea firme.</li>
+                </ol>
 
-<hr>
+                <div class="image-container">
+                    <img src="2c.jpg" alt="Adaptador USB a Serial RS-232">
+                    <p class="image-caption">Figura 2c: Adaptador USB a Serial RS-232</p>
+                </div>
 
-<h2>3. Preguntas Finales</h2>
+                <h3 class="subsection-title-numbered">2.c) Usar PuTTY para enviar datos seriales</h3>
+                <ol class="step-list">
+                    <li>Instalar y abrir <code>PuTTY</code> en el computador.</li>
+                    <li>En <strong>"Session"</strong>, seleccionar <strong>"Serial"</strong>.</li>
+                    <li>Configurar el <strong>Puerto COM</strong> (COM3, COM4, etc.).</li>
+                    <li>Configurar la <strong>velocidad en baudios</strong> (ej: 9600).</li>
+                    <li>Configurar parámetros: 8 bits de datos, No paridad, 1 bit de parada.</li>
+                    <li>Hacer clic en <strong>"Open"</strong>.</li>
+                    <li>Escribir caracteres repetidamente para observar la señal en el osciloscopio.</li>
+                </ol>
 
-<div class="section-image">
-    <!-- Imagen de la sección 3 (3.jpg) -->
-    <img src="3.jpg" style="width: 300px; height: auto;" alt="Imagen Sección 3 - Preguntas Finales">
-</div>
+                <div class="image-container">
+                    <img src="2d.jpg" alt="Configuración de PuTTY">
+                    <p class="image-caption">Figura 2d: Configuración del programa PuTTY para comunicación serial</p>
+                </div>
 
-<p>
-A continuación se sugieren cinco preguntas de distintos niveles de complejidad cognitiva:
-</p>
-<ol>
-    <li><strong>(Nivel Conocimiento)</strong>
-        <br>¿Cuáles son los pines clave del conector DB9 para la comunicación serial RS-232?
-    </li>
-    <li><strong>(Nivel Comprensión)</strong>
-        <br>Explica por qué el bit de inicio (Start Bit) en RS-232 es típicamente un nivel bajo y cómo se representa en la forma de onda.
-    </li>
-    <li><strong>(Nivel Aplicación)</strong>
-        <br>Si configuramos la comunicación a 19200 bps en lugar de 9600 bps, ¿qué cambios tendríamos que realizar en el osciloscopio para observar correctamente la señal?
-    </li>
-    <li><strong>(Nivel Análisis)</strong>
-        <br>Describe el proceso para distinguir el bit de paridad dentro de la trama capturada en el osciloscopio y cómo determinar si es par o impar.
-    </li>
-    <li><strong>(Nivel Evaluación/Síntesis)</strong>
-        <br>Propón una forma de verificar la integridad de la señal cuando se transmita a largas distancias mediante RS-232 y compara esta solución con el uso de un estándar como RS-485.
-    </li>
-</ol>
+                <h3 class="subsection-title-numbered">2.d) Conectar y ajustar el osciloscopio</h3>
+                <ol class="step-list">
+                    <li>Conectar la punta de prueba al <strong>pin TX</strong> del DB9.</li>
+                    <li>Conectar la pinza de tierra a <strong>GND</strong> (pin 5).</li>
+                    <li>Configurar el osciloscopio:
+                        <ul>
+                            <li><strong>Volts/Div:</strong> Ajustar para ±10V a ±12V</li>
+                            <li><strong>Time/Div:</strong> 100 μs/div o 200 μs/div</li>
+                            <li><strong>Trigger:</strong> Modo Edge, nivel ≈ 0V</li>
+                        </ul>
+                    </li>
+                    <li>Observar la trama: cada bit durará ≈ 104 μs a 9600 bps.</li>
+                </ol>
 
-<hr>
+                <div class="image-container">
+                    <img src="2e.jpg" alt="Conexión del osciloscopio">
+                    <p class="image-caption">Figura 2e: Conexión del osciloscopio al puerto serial</p>
+                </div>
 
-<h2>4. Elaboración del Informe Técnico de Laboratorio</h2>
+                <h3 class="subsection-title-numbered">2.e) Leer y reconstruir el dato desde el osciloscopio</h3>
+                <ol class="step-list">
+                    <li><strong>Bit de inicio (Start Bit):</strong> Nivel bajo (transición desde reposo).</li>
+                    <li><strong>Bits de datos:</strong> Generalmente 8 bits (≈104 μs c/u a 9600 bps).</li>
+                    <li><strong>Bit de paridad:</strong> Verificar si aplica (par o impar).</li>
+                    <li><strong>Bits de parada:</strong> 1 o 2 bits en estado alto.</li>
+                    <li><strong>Niveles de voltaje RS-232:</strong>
+                        <ul>
+                            <li>Inactivo (reposo): ≈ -12V</li>
+                            <li>Activo (bit start): ≈ +12V</li>
+                            <li><em>Recordar: niveles invertidos respecto a TTL</em></li>
+                        </ul>
+                    </li>
+                    <li><strong>Reconstruir el carácter:</strong> Traducir bits a binario y luego a ASCII.</li>
+                </ol>
+            </section>
 
-<div class="section-image">
-    <!-- Imagen de la sección 4 (4.jpg) -->
-    <img src="4.jpg" alt="Imagen Sección 4 - Informe Técnico de Laboratorio">
-</div>
+            <!-- SECCIÓN 3: PREGUNTAS -->
+            <section class="section">
+                <h2 class="section-title">3. Preguntas Finales</h2>
+                <p>A continuación se sugieren cinco preguntas de distintos niveles de complejidad cognitiva:</p>
 
-<p>
-Para concluir, se recomienda la siguiente estructura en la redacción del informe técnico de la práctica:
-</p>
+                <div class="image-container">
+                    <img src="3.jpg" alt="Preguntas de la guía">
+                    <p class="image-caption">Figura 3: Niveles de complejidad cognitiva</p>
+                </div>
 
-<h3>4.a) Portada</h3>
+                <div class="question-box">
+                    <span class="question-level">Nivel Conocimiento</span>
+                    <p><span class="question-number">Pregunta 1:</span>¿Cuáles son los pines clave del conector DB9 para la comunicación serial RS-232?</p>
+                </div>
 
-<p>
-- <strong>Título</strong>: “Análisis de señal de transmisión serial RS-232 mediante osciloscopio”.<br>
-- <strong>Nombre de la institución</strong>, departamento o asignatura.<br>
-- <strong>Integrantes</strong> y fecha de realización del laboratorio.<br>
-- <strong>Docente</strong> o persona encargada.
-</p>
+                <div class="question-box">
+                    <span class="question-level">Nivel Comprensión</span>
+                    <p><span class="question-number">Pregunta 2:</span>Explica por qué el bit de inicio (Start Bit) en RS-232 es típicamente un nivel bajo y cómo se representa en la forma de onda.</p>
+                </div>
 
-<h3>4.b) Declaración de Objetivos</h3>
+                <div class="question-box">
+                    <span class="question-level">Nivel Aplicación</span>
+                    <p><span class="question-number">Pregunta 3:</span>Si configuramos la comunicación a 19200 bps en lugar de 9600 bps, ¿qué cambios tendríamos que realizar en el osciloscopio para observar correctamente la señal?</p>
+                </div>
 
-<p>
-- Incluir el <strong>objetivo general</strong> (analizar una señal de transmisión serial usando osciloscopio, computador y adaptador USB a serial).<br>
-- Enumerar <strong>objetivos específicos</strong>, por ejemplo:
-</p>
-<ol>
-    <li>Identificar correctamente los pines TX, RX y GND en el conector DB9.</li>
-    <li>Configurar y operar el programa PuTTY para envío de datos en serie.</li>
-    <li>Ajustar el osciloscopio para capturar la trama de datos y reconocer cada bit.</li>
-    <li>Reconstruir el carácter transmitido a partir de la señal observada.</li>
-</ol>
+                <div class="question-box">
+                    <span class="question-level">Nivel Análisis</span>
+                    <p><span class="question-number">Pregunta 4:</span>Describe el proceso para distinguir el bit de paridad dentro de la trama capturada en el osciloscopio y cómo determinar si es par o impar.</p>
+                </div>
 
-<h3>4.c) Marco Teórico</h3>
+                <div class="question-box">
+                    <span class="question-level">Nivel Evaluación/Síntesis</span>
+                    <p><span class="question-number">Pregunta 5:</span>Propón una forma de verificar la integridad de la señal cuando se transmita a largas distancias mediante RS-232 y compara esta solución con el uso de un estándar como RS-485.</p>
+                </div>
+            </section>
 
-<p>
-- Desarrollo de los puntos mencionados en la sección 1: <br>
-  - Principios de transmisión serial (RS-232 vs TTL). <br>
-  - Parámetros principales: baud rate, bits de datos, paridad, bit de parada. <br>
-  - Nivel de voltajes RS-232. <br>
-  - Relevancia del protocolo en el ámbito industrial y de comunicaciones.
-</p>
+            <!-- SECCIÓN 4: INFORME TÉCNICO -->
+            <section class="section">
+                <h2 class="section-title">4. Elaboración del Informe Técnico</h2>
+                <p>Se recomienda la siguiente estructura para la redacción del informe técnico:</p>
 
-<h3>4.d) Desarrollo (Lectura del dato desde el osciloscopio)</h3>
+                <div class="image-container">
+                    <img src="4.jpg" alt="Estructura del informe técnico">
+                    <p class="image-caption">Figura 4: Estructura recomendada para el informe técnico</p>
+                </div>
 
-<p>
-- Descripción de los <strong>procedimientos</strong> realizados.<br>
-- <strong>Configuración</strong> del software PuTTY.<br>
-- <strong>Conexiones</strong> físicas (DB9, USB, osciloscopio).<br>
-- Ajustes detallados en el <strong>osciloscopio</strong> (escala de tiempo, voltaje, disparo, etc.).<br>
-- Capturas de pantalla o fotografías (si se permite) de la señal en el osciloscopio.<br>
-- <strong>Análisis de la trama</strong>:  
-  <ul>
-    <li>Duración medida de cada bit.</li>
-    <li>Confirmación de la velocidad en baudios.</li>
-    <li>Identificación de Start, Data, Paridad (si aplica) y Stop bits.</li>
-    <li>Interpretación del carácter ASCII resultante.</li>
-  </ul>
-</p>
+                <h3 class="subsection-title-numbered">4.a) Portada</h3>
+                <ul>
+                    <li><strong>Título:</strong> "Análisis de señal de transmisión serial RS-232 mediante osciloscopio"</li>
+                    <li>Nombre de la institución, departamento o asignatura</li>
+                    <li>Integrantes y fecha de realización</li>
+                    <li>Docente o persona encargada</li>
+                </ul>
 
-<h3>4.e) Conclusión</h3>
+                <h3 class="subsection-title-numbered">4.b) Declaración de Objetivos</h3>
+                <ul>
+                    <li>Incluir el objetivo general</li>
+                    <li>Enumerar objetivos específicos:
+                        <ul>
+                            <li>Identificar correctamente los pines TX, RX y GND</li>
+                            <li>Configurar y operar PuTTY</li>
+                            <li>Ajustar el osciloscopio para capturar la trama</li>
+                            <li>Reconstruir el carácter transmitido</li>
+                        </ul>
+                    </li>
+                </ul>
 
-<p>
-- Evaluar si se cumplieron los objetivos.<br>
-- Resumir los hallazgos (por ejemplo, la importancia de la correcta configuración de parámetros).<br>
-- Mencionar posibles <strong>dificultades y soluciones</strong> propuestas (ruido, inestabilidad de la señal, equivocaciones al asignar TX/RX).
-</p>
+                <h3 class="subsection-title-numbered">4.c) Marco Teórico</h3>
+                <ul>
+                    <li>Principios de transmisión serial (RS-232 vs TTL)</li>
+                    <li>Parámetros principales: baud rate, bits, paridad, stop bits</li>
+                    <li>Nivel de voltajes RS-232</li>
+                    <li>Relevancia en el ámbito industrial</li>
+                </ul>
 
-<h3>4.f) Fuentes Bibliográficas</h3>
+                <h3 class="subsection-title-numbered">4.d) Desarrollo</h3>
+                <ul>
+                    <li>Descripción de procedimientos</li>
+                    <li>Configuración de PuTTY</li>
+                    <li>Conexiones físicas (DB9, USB, osciloscopio)</li>
+                    <li>Ajustes del osciloscopio</li>
+                    <li>Capturas de pantalla de la señal</li>
+                    <li>Análisis de la trama:
+                        <ul>
+                            <li>Duración medida de cada bit</li>
+                            <li>Confirmación de baudios</li>
+                            <li>Identificación de Start, Data, Paridad y Stop</li>
+                            <li>Interpretación del carácter ASCII</li>
+                        </ul>
+                    </li>
+                </ul>
 
-<p>
-- Citar manuales, páginas de referencia confiables (si se utilizaron), datasheets de adaptadores USB a serial, artículos de IEEE u otras fuentes académicas.<br>
-- Asegurarse de cumplir con el estilo de referencia pedido (APA, IEEE, u otro formato).
-</p>
+                <h3 class="subsection-title-numbered">4.e) Conclusión</h3>
+                <ul>
+                    <li>Evaluación del cumplimiento de objetivos</li>
+                    <li>Resumen de hallazgos</li>
+                    <li>Dificultades y soluciones propuestas</li>
+                </ul>
 
+                <h3 class="subsection-title-numbered">4.f) Fuentes Bibliográficas</h3>
+                <ul>
+                    <li>Manuales y datasheets</li>
+                    <li>Páginas de referencia confiables</li>
+                    <li>Artículos IEEE u otras fuentes académicas</li>
+                    <li>Formato: APA, IEEE u otro solicitado</li>
+                </ul>
+            </section>
+        </main>
 
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p><strong>Guía de Laboratorio - Arquitectura de Comunicaciones Industriales</strong></p>
+            <p>Departamento de Electrónica, Automatización y Robótica</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">© 2026 - Material educativo para el ramo de SCADA</p>
+            <p style="margin-top: 5px; font-size: 0.85em;">Prof. Pablo Pineda Valdebenito</p>
+        </footer>
+    </div>
 
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="action-buttons">
+        <button class="btn" onclick="window.print()">🖨️ Imprimir Guía</button>
+    </div>
+
+    <script>
+        // Animación de entrada suave para las secciones
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            sections.forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+                observer.observe(section);
+            });
+        });
+    </script>
 </body>
 </html>
